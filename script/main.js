@@ -4,8 +4,6 @@
 (function(window) {
 
     var player = -1 // -1黑棋下  1白棋下
-    var _Chessman = null  // 继承Chessman的子类
-    var _Chessboard = null  // 继承Chessboard的子类
     var chess = new Array(38) // 二维数组保存五子棋数据 0无 1黑 2白  多加4个 防止数组超界
     for (var i = 0; i < chess.length; i++) {
         var arr = new Array(38)
@@ -15,25 +13,10 @@
         }
     }
 
-    var render = 'canvas'  // 渲染方法 canvas svg dom
+    var gobang = GoBang('canvas')  // canvas渲染器  可选值 'canvas', 'svg', 'dom'
 
-    // 浏览器判断支持哪个类
-    switch(render) {
-        case 'canvas':
-            _Chessman = ChessmanCanvas
-            _Chessboard = ChessboardCanvas
-            break
-        case 'svg':
-            _Chessman = ChessmanSvg
-            _Chessboard = ChessboardSvg
-            break
-        default:
-            _Chessman = ChessmanDom
-            _Chessboard = ChessboardDom
-    }
-
-    var chessboard = new _Chessboard('container', 900) // 创建900宽的棋盘
-    Interface.sure(chessboard, rendererInterfaceChessBoard)  // 确认接口实现
+    var chessboard = new gobang.Chessboard('container', 900) // 创建900宽的棋盘
+    Interface.sure(chessboard, gobang.Chessboard.interface)  // 确认接口实现
     chessboard.render() // 渲染棋盘
 
     /**
@@ -110,9 +93,9 @@
 
         chess[x + 4][y + 4] = (player === -1 ? 1 : 2)
         var color = (player === -1 ? '#000000' : '#ffffff')
-        var chessPiece = new _Chessman(chessboard.game, x, y, color)
+        var chessPiece = new gobang.Chessman(chessboard.game, x, y, color)
 
-        Interface.sure(chessPiece, rendererInterfaceChess)  //检测实例是否完成接口方法
+        Interface.sure(chessPiece, gobang.Chessman.interface)  //检测实例是否完成接口方法
 
         chessPiece.render()
 
