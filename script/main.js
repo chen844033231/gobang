@@ -3,12 +3,9 @@
 /////////////////////////////////////////////////////////////////////
 (function(window) {
 
-    var isSupportCanvas = !!document.createElement("canvas").getContext
-    //var isSupportCanvas = false
-
     var player = -1 // -1黑棋下  1白棋下
     var _Chessman = null  // 继承Chessman的子类
-    var _ChessboardSelect = null  // 继承Chessboard的子类
+    var _Chessboard = null  // 继承Chessboard的子类
     var chess = new Array(38) // 二维数组保存五子棋数据 0无 1黑 2白  多加4个 防止数组超界
     for (var i = 0; i < chess.length; i++) {
         var arr = new Array(38)
@@ -18,13 +15,21 @@
         }
     }
 
+    var render = 'canvas'  // 渲染方法 canvas svg dom
+
     // 浏览器判断支持哪个类
-    if(isSupportCanvas) {
-        _Chessman = ChessmanCanvas
-        _Chessboard = ChessboardCanvas
-    } else {
-        _Chessman = ChessmanDom
-        _Chessboard = ChessboardDom
+    switch(render) {
+        case 'canvas':
+            _Chessman = ChessmanCanvas
+            _Chessboard = ChessboardCanvas
+            break
+        case 'svg':
+            _Chessman = ChessmanSvg
+            _Chessboard = ChessboardSvg
+            break
+        default:
+            _Chessman = ChessmanDom
+            _Chessboard = ChessboardDom
     }
 
     var chessboard = new _Chessboard('container', 900) // 创建900宽的棋盘

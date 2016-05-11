@@ -94,6 +94,27 @@ ChessmanDom.prototype.render = function() {
     return chessman
 }
 
+/**
+ * [svg类继承与Chessman]
+ */
+function ChessmanSvg(game, x, y, color) {
+    Chessman.call(this, game, x, y, color)
+}
+
+// 继承Chessman类
+inherit(Chessman, ChessmanSvg)
+
+// 渲染方法 采用svg渲染
+ChessmanSvg.prototype.render = function() {
+    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+    circle.setAttribute('cx', this.x * 30 + 15)
+    circle.setAttribute('cy', this.y * 30 + 15)
+    circle.setAttribute('r', 12)
+    circle.setAttribute('fill', this.color)
+    this.game.appendChild(circle)
+    return circle
+}
+
 
 /**
  * [继承Chessboard类的canvas类]
@@ -168,4 +189,44 @@ ChessboardDom.prototype.render = function() {
         dom.appendChild(lineV)
     }
     return dom
+}
+
+/**
+ * [继承Chessboard类的svg类]
+ */
+function ChessboardSvg(container, width, game) {
+    Chessboard.call(this, container, width, game)
+}
+
+inherit(Chessboard, ChessboardSvg)
+
+// 实现接口定义的render方法
+ChessboardSvg.prototype.render = function() {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg') // 创建svg元素
+    var boardWidth = this.width
+    svg.setAttribute('width', boardWidth)
+    svg.setAttribute('height', boardWidth)
+    svg.style.backgroundColor = '#AFB14B'
+    this.container.appendChild(svg)
+    this.game = svg
+    for (var i = 0; i <= boardWidth; i = i + 30) {
+        var lineH = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        lineH.setAttribute("x1", 0)
+        lineH.setAttribute("y1", i)
+        lineH.setAttribute("x2", boardWidth)
+        lineH.setAttribute("y2", i)
+        lineH.style.stroke = '#313131'
+        lineH.style.strokeWidth = 1
+        svg.appendChild(lineH)
+
+        var lineV = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        lineV.setAttribute("x1", i)
+        lineV.setAttribute("y1", "0")
+        lineV.setAttribute("x2", i)
+        lineV.setAttribute("y2", boardWidth)
+        lineV.style.stroke = '#313131'
+        lineV.style.strokeWidth = 1
+        svg.appendChild(lineV)
+    }
+    return svg
 }
