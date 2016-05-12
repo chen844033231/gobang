@@ -12,12 +12,24 @@
             chess[i][j] = 0
         }
     }
+    
+    var GoBang = null
+    var render = 'svg'
+    switch (render) {
+        case 'canvas':
+        	GoBang = GoBangCanvas
+            break
+        case 'svg':
+            GoBang = GoBangSvg
+            break
+        default:
+        	GoBang = GoBangDom
+    }
 
-    var gobang = GoBang('canvas')  // canvas渲染器  可选值 'canvas', 'svg', 'dom'
+    var gobang = new GoBang()
 
-    var chessboard = new gobang.Chessboard('container', 900) // 创建900宽的棋盘
-    Interface.sure(chessboard, gobang.Chessboard.interface)  // 确认接口实现
-    chessboard.render() // 渲染棋盘
+    var chessboard = gobang.renderChessBoard('container', 900) // 创建900宽的棋盘
+    Interface.sure(gobang, GoBangInterface)  // 确认接口实现
 
     /**
      * [判断逻辑]
@@ -93,11 +105,7 @@
 
         chess[x + 4][y + 4] = (player === -1 ? 1 : 2)
         var color = (player === -1 ? '#000000' : '#ffffff')
-        var chessPiece = new gobang.Chessman(chessboard.game, x, y, color)
-
-        Interface.sure(chessPiece, gobang.Chessman.interface)  //检测实例是否完成接口方法
-
-        chessPiece.render()
+        gobang.renderChess(chessboard, x, y, color)
 
         judge(x + 4, y + 4)
 
@@ -105,6 +113,6 @@
 
     }
 
-    // 注册监听事件 
-    chessboard.game.addEventListener('click', drop, false)
+    // 注册监听事件
+    chessboard.addEventListener('click', drop, false)
 })(window)
